@@ -1,0 +1,31 @@
+databases:
+- name: store-db
+  databaseName: store_db_q8tr
+  user: store_db_q8tr_user
+  plan: free
+  region: frankfurt
+  ipAllowList:
+  - source: 0.0.0.0/0
+    description: everywhere
+  postgresMajorVersion: "16"
+services:
+- type: web
+  name: store-frontend
+  runtime: static
+  repo: https://github.com/YaminSaizonou/store-frontend
+  buildCommand: npm install; npm run build
+  staticPublishPath: dist
+- type: web
+  name: store-api
+  runtime: node
+  repo: https://github.com/YaminSaizonou/store-api
+  plan: free
+  envVars:
+  - key: STRIPE_PUBLISHABLE_KEY
+    sync: false
+  - key: STRIPE_SECRET_KEY
+    sync: false
+  region: frankfurt
+  buildCommand: npm install
+  startCommand: node server.js
+version: "1"
